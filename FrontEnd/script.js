@@ -5,7 +5,6 @@ const galleryContainer = document.querySelector(".gallery.articles");
 
 let works; // Variable pour stocker les travaux
 
-// Fonction pour créer un élément de travail dans la galerie
 function createWorkElement(work) {
   const workElement = document.createElement("div");
   workElement.classList.add("work");
@@ -22,7 +21,6 @@ function createWorkElement(work) {
   return workElement;
 }
 
-// Fonction pour afficher les travaux dans la galerie
 function displayWorks(works) {
   galleryContainer.innerHTML = "";
 
@@ -32,15 +30,56 @@ function displayWorks(works) {
   });
 }
 
-// Fonction pour récupérer tous les travaux depuis l'API
+function fetchworks(url) {
+  fetch(url) 
+    .then((response)=>response.json)
+    .then((worksData) => {
+      works = worksData;
+      displayWorks(works);
+    })
+    .catch((error) => {
+      console.error("Une erreur s'est produite lors de la récupération des travaux:", error);
+    });
+  }
+
 function fetchAllWorks() {
   fetch(worksUrl)
     .then((response) => response.json())
     .then((worksData) => {
-      works = worksData; // Stock les travaux dans la variable globale
+      works = worksData;
       displayWorks(works);
     })
     .catch((error) => {
       console.error("Une erreur s'est produite lors de la récupération des travaux:", error);
     });
 }
+
+function fetchCategories(url) {
+  fetch(url)
+  .then((response)=>response.json())
+  .then((categories) =>{
+    const filtersContainer = document.querySelector (".filtres");
+    filtersContainer.innerHTML =".";
+
+    categories.forEach ((category) =>{
+      const filterButton = document.createElement("button");
+      filterButton.classList.add("Filtre");
+      filterButton.setAttribute("data-category-id-name", category.id);
+      filterButton.innerHTML = `<p>${category.name}</p>`;
+      filtersContainer.appendChild(filterButton);
+
+      filterButton.addEventListener("click", () => {
+        const categoryId =category.id;
+        const filteredWorks = works.filter ((work) => work.category.id === categoryId)
+        displayWorks(filteredWorks);
+      })
+    })
+    
+    fetchAllWorks();
+  })
+  .catch((error) => {
+    console.error("Une erreur s'est produite lors de la récupération des catégories:", error);
+});
+}
+
+fetchCategories(categoriesUrl);
