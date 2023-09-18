@@ -182,7 +182,10 @@ li a:hover{
 }
 
 .gallery figcaption{
-	font-size: 13px;
+	font-size: 17px;
+	color:#3D3D3D;
+	margin-top: 5px;
+	font-family: "work sans";
 }
 #contact {
 	width: 50%;
